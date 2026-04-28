@@ -1,0 +1,26 @@
+# build
+build/
+
+# cmake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# binaries
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dylib
+
+# debug symbols
+*.dSYM/
+
+# vscode
+.vscode/
+
+# macOS
+.DS_Store
