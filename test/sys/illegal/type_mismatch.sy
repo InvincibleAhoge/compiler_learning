@@ -1,0 +1,5 @@
+int main() {
+    const int c = 5;
+    c = 10; // 错误：不能给 const 变量赋值
+    return 0;
+}

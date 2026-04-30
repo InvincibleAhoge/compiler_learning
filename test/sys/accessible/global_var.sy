@@ -1,0 +1,11 @@
+const int MAX = 100;
+int global = 50;
+
+int add(int a) {
+    return a + global;
+}
+
+int main() {
+    int result = add(MAX);
+    return result; // 应返回 150
+}

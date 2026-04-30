@@ -1,0 +1,5 @@
+int x = 10;
+int x = 20; // 错误：x 重复定义
+int main() {
+    return 0;
+}

@@ -1,0 +1,15 @@
+int main() {
+    int i = 0;
+    int count = 0;
+    while (i < 5) {
+        if (i % 2 == 0) {
+            count = count + 1;
+        } else {
+            if (i == 3) {
+                break;
+            }
+        }
+        i = i + 1;
+    }
+    return count; // 应返回 3 (i=0,2,4 但 i=4 未执行因 i=3 break)
+}

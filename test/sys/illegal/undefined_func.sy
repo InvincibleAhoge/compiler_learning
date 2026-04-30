@@ -1,0 +1,4 @@
+int main() {
+    int x = foo(); // 错误：foo 未声明/定义
+    return x;
+}
