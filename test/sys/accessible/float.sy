@@ -1,0 +1,9 @@
+int main() {
+    // float a = 0x1.2;
+    float b = 0x1.2p3;
+    float c = 0x1p3;
+    float d = 0x1e5;
+    float e = 1.5;
+    float f = 1e5;
+    float g = 100;
+}
