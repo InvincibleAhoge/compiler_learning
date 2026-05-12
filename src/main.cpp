@@ -28,9 +28,9 @@ std::string open_file(const std::string &path) {
   return buffer.str();
 }
 
-int main(int argc, char *argv[]) {
+int main(const int argc, char *argv[]) {
   if (argc < 2) {
-    std::cerr << "usage: sysyc <file.sy>\n";
+    std::cerr << "usage: sysy <file.sy>\n";
     return 1;
   }
 
@@ -47,9 +47,11 @@ int main(int argc, char *argv[]) {
 #endif
 
   // 暂时的变量
-  auto tokens = tokenize(file);
-  print_tokens(tokens);
-  TokenStream ts{std::move(tokens)};
+  const auto tokens = tokenize(file);
+#ifdef SYSY_PRINT_TOKENS
+  print_tokens(file, tokens);
+#endif
+  // TokenStream ts{std::move(tokens)};
 
   return 0;
 }
