@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include <vector>
 
 namespace sysy {
@@ -26,11 +25,6 @@ struct SourceLoc {
     explicit SourceLoc(const size_t offset) : offset(offset) {
     }
 };
-
-// struct SourceRange {
-//     SourceLoc begin;
-//     size_t length = 0;
-// };
 
 struct LineCol {
     size_t line; // 1-based

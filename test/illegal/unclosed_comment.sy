@@ -1,0 +1,6 @@
+int add(int a, int b) {
+    /*
+    *  calculate a plus b and return the result
+    *
+    return a + b;
+}

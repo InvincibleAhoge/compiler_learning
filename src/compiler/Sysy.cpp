@@ -3,6 +3,8 @@
 //
 
 #include "Sysy.h"
+#include <algorithm>
+#include <iterator>
 
 void build_line_offsets(File &file) {
     file.line_offsets.clear();

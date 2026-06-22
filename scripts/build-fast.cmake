@@ -7,7 +7,6 @@ execute_process(
     COMMAND "${CMAKE_COMMAND}"
         -S "${PROJECT_ROOT}"
         -B "${BUILD_DIR}"
-        -DUSE_FAST_IO=ON
         -DSYSY_PRINT_TOKENS=OFF
     RESULT_VARIABLE CONFIG_RESULT
 )

@@ -1,57 +1,72 @@
 #include "Sysy.h"
 #include "token.h"
+#include "error.h"
+
+#include <filesystem>
 #include <fstream>
-#include <ios>
 #include <iostream>
-#include <sstream>
 #include <stdexcept>
 
-std::string open_file1(const std::string &path) {
-  std::ifstream out(path, std::ios::ate | std::ios::binary);
-  if (!out.is_open())
-    throw std::runtime_error{"cannot open file"};
-
-  std::streamsize size = out.tellg();
-  out.seekg(0, std::ios::beg);
-  std::string buffer(size, '\n');
-  if (size > 0)
-    out.read(buffer.data(), size);
-  return buffer;
-}
+namespace fs = std::filesystem;
 
 std::string open_file(const std::string &path) {
-  std::ifstream out(path, std::ios::binary);
-  if (!out.is_open())
-    throw std::runtime_error{"cannot open file"};
-  std::stringstream buffer;
-  buffer << out.rdbuf();
-  return buffer.str();
+    std::ifstream out(path, std::ios::ate | std::ios::binary);
+    if (!out.is_open())
+        throw Error::CompileError{
+            Error::ErrorCode::FILE_OPEN_FAILED,
+            "cannot open file"
+        };
+
+    const std::streamsize size = out.tellg();
+    out.seekg(0, std::ios::beg);
+    std::string buffer(size, '\n');
+    if (size > 0)
+        out.read(buffer.data(), size);
+    return buffer;
+}
+
+fs::path make_output_path(const std::string &source_path) {
+    const fs::path output_dir = "output";
+    fs::create_directories(output_dir);
+    fs::path output_name = fs::path(source_path).filename();
+    output_name.replace_extension(".tok");
+    return output_dir / output_name;
 }
 
 int main(const int argc, char *argv[]) {
-  if (argc < 2) {
-    std::cerr << "usage: sysy <file.sy>\n";
-    return 1;
-  }
+    File file;
 
-  File file;
-  file.name = argv[1];
-  std::cout << "正在编译文件：" << file.name << std::endl;
+    try {
+        if (argc < 2) {
+            throw Error::CompileError{
+                Error::ErrorCode::FILE_OPEN_FAILED,
+                "usage: Sysy <file.sy>"
+            };
+        }
 
-#ifdef USE_FAST_IO
-  std::cout << ">> 启用模式: 高性能读取 (Method 1)" << std::endl;
-  file.contents = open_file1(file.name);
-#else
-  std::cout << ">> 启用模式: 标准读取 (Method 2)" << std::endl;
-  file.contents = open_file(file.name);
-#endif
+        file.name = argv[1];
+        file.contents = open_file(file.name);
 
-  // 暂时的变量
-  const auto tokens = tokenize(file);
+        const auto tokens = tokenize(file);
+
 #ifdef SYSY_PRINT_TOKENS
-  print_tokens(file, tokens);
+        const fs::path output_path = make_output_path(file.name);
+        std::ofstream output(output_path);
+        if (!output.is_open()) {
+            throw Error::CompileError{
+                Error::ErrorCode::OUTPUT_OPEN_FAILED,
+                "cannot create output file"
+            };
+        }
+        print_tokens(file, tokens, output);
 #endif
-  // TokenStream ts{std::move(tokens)};
 
-  return 0;
+        return 0;
+    } catch (const Error::CompileError &err) {
+        Error::print_error(file, err, std::cerr);
+        return Error::error_code_value(err.code);
+    } catch (const std::exception &err) {
+        std::cerr << "[E9001] internal error: " << err.what() << '\n';
+        return Error::error_code_value(Error::ErrorCode::InternalError);
+    }
 }

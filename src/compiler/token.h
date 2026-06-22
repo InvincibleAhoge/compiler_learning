@@ -1,6 +1,8 @@
 #pragma once
 
+#include <ostream>
 #include <vector>
+#include <string_view>
 #include "Sysy.h"
 
 // Token
@@ -41,7 +43,7 @@ struct Token {
 
 std::vector<Token> tokenize(File &file);
 
-void print_tokens(const File &file, const std::vector<Token> &tokens);
+void print_tokens(const File &file, const std::vector<Token> &tokens, std::ostream &out);
 
 std::string_view lexeme(const File &file, const Token &token);
 

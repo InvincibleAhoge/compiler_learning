@@ -1,5 +1,8 @@
 # build
 build/
+build-fast/
+build-fast-tokens/
+output/
 
 # cmake
 CMakeCache.txt
@@ -21,6 +24,12 @@ Makefile
 
 # vscode
 .vscode/
+
+# local IDE/tools
+.idea/
+.claude/
+.cache/
+.clangd
 
 # macOS
 .DS_Store
