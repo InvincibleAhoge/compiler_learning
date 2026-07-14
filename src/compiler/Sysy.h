@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstddef>
+#include <cstdint>
+#include <string>
 #include <vector>
 
 namespace sysy {
@@ -25,6 +28,23 @@ struct SourceLoc {
     explicit SourceLoc(const size_t offset) : offset(offset) {
     }
 };
+
+// Source ranges are half-open: [begin, end).  Offsets remain the single
+// source of truth; line and column numbers are derived only for diagnostics.
+struct SourceRange {
+    SourceLoc begin;
+    SourceLoc end;
+
+    [[nodiscard]] size_t length() const {
+        return end.offset >= begin.offset ? end.offset - begin.offset : 0;
+    }
+
+    [[nodiscard]] bool empty() const {
+        return begin.offset == end.offset;
+    }
+};
+
+SourceRange merge_range(SourceRange lhs, SourceRange rhs);
 
 struct LineCol {
     size_t line; // 1-based

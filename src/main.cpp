@@ -1,6 +1,8 @@
-#include "Sysy.h"
-#include "token.h"
-#include "error.h"
+#include "compiler/Sysy.h"
+#include "compiler/ast_dump.h"
+#include "compiler/error.h"
+#include "compiler/parser.h"
+#include "compiler/token.h"
 
 #include <filesystem>
 #include <fstream>
@@ -37,17 +39,31 @@ int main(const int argc, char *argv[]) {
     File file;
 
     try {
-        if (argc < 2) {
+        bool dump_ast_requested = false;
+        const char *source_path = nullptr;
+        if (argc == 2) {
+            source_path = argv[1];
+        } else if (argc == 3 && std::string_view{argv[1]} == "--dump-ast") {
+            dump_ast_requested = true;
+            source_path = argv[2];
+        } else {
             throw Error::CompileError{
                 Error::ErrorCode::FILE_OPEN_FAILED,
-                "usage: Sysy <file.sy>"
+                "usage: Sysy [--dump-ast] <file.sy>"
             };
         }
 
-        file.name = argv[1];
+        file.name = source_path;
         file.contents = open_file(file.name);
 
-        const auto tokens = tokenize(file);
+        auto tokens = tokenize(file);
+
+        if (dump_ast_requested) {
+            Parser parser(file, std::move(tokens));
+            const auto unit = parser.parse();
+            dump_ast(*unit, std::cout);
+            return 0;
+        }
 
 #ifdef SYSY_PRINT_TOKENS
         const fs::path output_path = make_output_path(file.name);

@@ -28,3 +28,10 @@ LineCol get_line_col(const File &file, const SourceLoc loc) {
 
     return {line_index + 1, loc.offset - line_start + 1};
 }
+
+SourceRange merge_range(const SourceRange lhs, const SourceRange rhs) {
+    return {
+        SourceLoc{std::min(lhs.begin.offset, rhs.begin.offset)},
+        SourceLoc{std::max(lhs.end.offset, rhs.end.offset)},
+    };
+}

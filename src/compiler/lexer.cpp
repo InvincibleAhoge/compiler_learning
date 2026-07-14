@@ -47,7 +47,7 @@ bool startswith(const std::string_view s, const std::string_view prefix) {
 
 bool is_keyword(const char *p, const size_t len) {
   static const char *keywords[] = {"break",  "const", "continue", "else",
-                                   "float",  "for",   "if",       "int",
+                                   "float",  "if",    "int",
                                    "return", "void",  "while"};
   for (const auto kw : keywords)
     if (strlen(kw) == len && strncmp(p, kw, len) == 0)
@@ -281,4 +281,8 @@ void print_tokens(const File &file, const std::vector<Token> &tokens,
 
 std::string_view lexeme(const File &file, const Token &token) {
   return {file.contents.data() + token.loc.offset, token.length};
+}
+
+SourceRange token_range(const Token &token) {
+  return {token.loc, SourceLoc{token.loc.offset + token.length}};
 }
